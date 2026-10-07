@@ -92,3 +92,22 @@ stylua --check .
 `tests/smoke.lua` test 8 is skipped until treesitter parsers are installed.
 The Julia and LaTeX stacks have manual checks described in `PLAN.md`; open
 `sample/juliaproj/test.jl` and `sample/test.tex` to exercise them.
+
+## Troubleshooting
+
+**`Invalid node type "tab"` when opening a picker (e.g. `<leader>km`)** — the
+installed tree-sitter parser no longer matches the queries bundled with your
+Neovim (common after a Neovim upgrade, or when a stale parser shadows the one
+nvim-treesitter installed). Rebuild the parsers:
+
+```sh
+nvim --headless "+TSInstall! vim" +qa     # force-rebuild e.g. the vim parser
+# or, after a Neovim upgrade:
+nvim --headless "+TSUpdate" +qa
+```
+
+Check `:checkhealth vim.treesitter` and remove stale `vim.so` files from other
+parser directories if they shadow nvim-treesitter. As a safety net, the snacks
+picker degrades to unhighlighted entries instead of erroring when a query
+cannot be compiled.
+

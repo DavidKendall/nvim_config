@@ -23,6 +23,20 @@ return {
       quickfile = {},
       bigfile = {},
     },
+    config = function(_, opts)
+      require("snacks").setup(opts)
+
+      -- Snacks highlights picker entries with tree-sitter. If a parser no longer
+      -- matches the host Neovim's bundled queries (e.g. a stale `vim` parser
+      -- after a Neovim upgrade), compiling the query throws and aborts the
+      -- picker (seen with <leader>km). Degrade to unhighlighted lines instead.
+      local highlight = require "snacks.picker.util.highlight"
+      local get_highlights = highlight.get_highlights
+      highlight.get_highlights = function(...)
+        local ok, result = pcall(get_highlights, ...)
+        return ok and result or {}
+      end
+    end,
   },
 
   {
