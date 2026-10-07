@@ -72,7 +72,7 @@ julia --project=~/.julia/environments/nvim-lspconfig -e 'using Pkg; Pkg.add("Lan
 | `<leader>e` | n | toggle file explorer |
 | `<leader>ff` / `fg` / `fb` / `fr` / `fs` | n | find files / grep / buffers / recent / document symbols |
 | `<leader>km` | n | pick keymaps |
-| `<leader>tb` | n | `:TexlabBuild` |
+| `<leader>tb` | n | texlab build (`LspTexlabBuild`) |
 | `<leader>lf` | n | format buffer (conform) |
 | `gd` / `gD` / `K` | n | definition / declaration / hover |
 | `grn` / `grr` / `gri` / `gra` | n | rename / references / implementation / code action (native 0.11) |

@@ -3,7 +3,17 @@ local map = vim.keymap.set
 -- preserved from the old config
 map("i", "jk", "<Esc>", { desc = "Exit insert mode" })
 map("n", ";", ":", { desc = "CMD enter command mode" })
-map("n", "<leader>tb", "<cmd>TexlabBuild<CR>", { desc = "Texlab build" })
+-- nvim-lspconfig renamed the texlab commands to a `Lsp` prefix
+-- (`TexlabBuild` -> `LspTexlabBuild`). Invoke whichever is defined for the
+-- current (texlab-attached) buffer.
+map("n", "<leader>tb", function()
+  for _, cmd in ipairs { "LspTexlabBuild", "TexlabBuild" } do
+    if vim.fn.exists(":" .. cmd) == 2 then
+      return vim.cmd(cmd)
+    end
+  end
+  vim.notify("TexlabBuild: no texlab client attached to this buffer", vim.log.levels.WARN)
+end, { desc = "Texlab build" })
 map("n", "<leader>km", function()
   require("snacks").picker.keymaps()
 end, { desc = "Show all keymaps" })
