@@ -3,16 +3,31 @@ local map = vim.keymap.set
 -- preserved from the old config
 map("i", "jk", "<Esc>", { desc = "Exit insert mode" })
 map("n", ";", ":", { desc = "CMD enter command mode" })
--- nvim-lspconfig renamed the texlab commands to a `Lsp` prefix
--- (`TexlabBuild` -> `LspTexlabBuild`). Invoke whichever is defined for the
--- current (texlab-attached) buffer.
+-- Build the current LaTeX document with texlab.
+-- nvim-lspconfig renamed the commands to a `Lsp` prefix (`TexlabBuild` ->
+-- `LspTexlabBuild`). If texlab is attached but neither command exists, building
+-- is still done directly via the `textDocument/build` request.
 map("n", "<leader>tb", function()
+  local clients = vim.lsp.get_clients { name = "texlab", bufnr = 0 }
+  if #clients == 0 then
+    vim.notify("texlab is not attached to this buffer", vim.log.levels.WARN)
+    return
+  end
   for _, cmd in ipairs { "LspTexlabBuild", "TexlabBuild" } do
     if vim.fn.exists(":" .. cmd) == 2 then
       return vim.cmd(cmd)
     end
   end
-  vim.notify("TexlabBuild: no texlab client attached to this buffer", vim.log.levels.WARN)
+  local client = clients[1]
+  local params = vim.lsp.util.make_position_params(0, client.offset_encoding)
+  client:request("textDocument/build", params, function(err, result)
+    if err then
+      vim.notify("texlab build error: " .. tostring(err), vim.log.levels.ERROR)
+    elseif result and result.status then
+      local status = { "Success", "Error", "Failure", "Cancelled" }
+      vim.notify("texlab build: " .. (status[result.status + 1] or result.status), vim.log.levels.INFO)
+    end
+  end, 0)
 end, { desc = "Texlab build" })
 map("n", "<leader>km", function()
   require("snacks").picker.keymaps()
