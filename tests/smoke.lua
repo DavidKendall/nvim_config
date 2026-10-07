@@ -121,6 +121,15 @@ for _, name in ipairs(servers) do
 end
 check("5. enabled servers resolve configs", #bad_servers == 0, "bad=" .. table.concat(bad_servers, ","))
 
+-- 5b. Our after/lsp overrides actually win over nvim-lspconfig's defaults.
+local julials = vim.lsp.config.julials
+local julials_cmd = julials.cmd and julials.cmd[4] or ""
+local overrides_ok = julials_cmd:find "SymbolServer" == nil
+  and contains(julials.root_markers, ".git")
+  and type(julials.on_attach) == "function"
+  and vim.tbl_get(vim.lsp.config.texlab, "settings", "texlab", "build", "executable") == "tectonic"
+check("5b. after/lsp overrides take precedence", overrides_ok)
+
 -- 6. conform
 local conform = require "conform"
 local stylua_ok, stylua_info = pcall(conform.get_formatter_info, "stylua")

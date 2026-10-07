@@ -43,9 +43,22 @@ rm -rf "$(nvim --headless -c 'print(stdpath("data"))' -c q)/nvchad"
 init.lua            leaders, lazy.nvim bootstrap, config imports
 lua/config/         options, keymaps, autocmds
 lua/plugins/        one file per concern, returns lazy.nvim specs
-lsp/                native server configs (auto-loaded, no require)
+after/lsp/          native server configs (auto-loaded, no require)
 tests/              headless smoke + tool report
 sample/             minimal fixtures for manual checks
+```
+
+Server overrides live in `after/lsp/`, not `lsp/`. lazy.nvim resets
+`runtimepath` with the config dir *before* plugin dirs, and Neovim merges
+`lsp/{name}.lua` files with later runtimepath entries taking precedence — so a
+top-level `lsp/` would be clobbered by nvim-lspconfig's shipped defaults. The
+`after/` entry is always last, so these files win.
+
+Julia note: the julials command is overridden for LanguageServer.jl **v6**
+(which bundles SymbolServer/StaticLint). Install it with:
+
+```sh
+julia --project=~/.julia/environments/nvim-lspconfig -e 'using Pkg; Pkg.add("LanguageServer")'
 ```
 
 ## Keymaps
