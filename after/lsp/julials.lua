@@ -49,13 +49,9 @@ return {
       default_diagnostics_handler(err, result, ctx, config)
     end,
   },
-  on_attach = function(client, bufnr)
-    -- Tell LanguageServer.jl which project to analyse. Without this, the LSP
-    -- startup script resolves project_path from its own CWD (inherited from
-    -- wherever Neovim was launched), which may not be the project root.
-    local root = client.config.root_dir or client.root_dir
-    if root then
-      client:notify("julia/activateenvironment", { envPath = root })
-    end
-  end,
+  -- LanguageServer.jl v6 removed the `julia/activateenvironment` notification;
+  -- it now picks the environment from the process working directory, which
+  -- Neovim sets to the server's root_dir. The no-op on_attach also suppresses
+  -- nvim-lspconfig's (v6-incompatible) LspJuliaActivateEnv command.
+  on_attach = function() end,
 }
