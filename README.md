@@ -48,8 +48,10 @@ they stop shadowing Neovim's bundled parsers:
 rm -rf ~/.local/share/nvim/lazy/nvim-treesitter/parser
 ```
 
-Leftover `vim.pack` packages (e.g. from a previous experiment) also trigger
-warnings in `:checkhealth lazy`; remove them if unused:
+Leftover `vim.pack` packages from an earlier experiment trigger warnings in
+`:checkhealth lazy`/`:checkhealth vim.pack`; the config no longer creates that
+directory (catppuccin auto-integration detection used to, via `vim.pack.get`).
+Remove a stale one if present:
 
 ```sh
 rm -rf ~/.local/share/nvim/site/pack/core ~/.config/nvim/nvim-pack-lock.json

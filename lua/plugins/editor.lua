@@ -5,6 +5,18 @@ return {
     priority = 1000,
     lazy = false,
     config = function()
+      -- Explicit integrations instead of `auto_integrations`, which calls
+      -- `vim.pack.get()` on Neovim 0.12 and creates an empty
+      -- `site/pack/core/opt` directory that lazy.nvim's health check flags.
+      require("catppuccin").setup {
+        auto_integrations = false,
+        integrations = {
+          blink_cmp = { enabled = true, style = "bordered" },
+          gitsigns = true,
+          snacks = true,
+          which_key = true,
+        },
+      }
       vim.cmd.colorscheme "catppuccin"
     end,
   },
