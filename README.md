@@ -2,14 +2,15 @@
 
 A small, native-first, boring Neovim setup. It leans on Neovim ≥ 0.11's built-in
 LSP client (`vim.lsp.config` / `vim.lsp.enable`), so server configuration lives in
-`lsp/*.lua` and no Mason layer is needed. Plugins exist only for genuine gaps:
-completion (blink.cmp), fuzzy finding/explorer/statusline (snacks.nvim), theme
-(catppuccin), formatting (conform.nvim), git signs, which-key, treesitter, and
-Lean. There is no distribution, no base46, and no abstraction layer.
+`after/lsp/*.lua` and no Mason layer is needed. Plugins exist only for genuine
+gaps: completion (blink.cmp), fuzzy finding/explorer (snacks.nvim), statusline
+(lualine) and icons (nvim-web-devicons), theme (catppuccin), formatting
+(conform.nvim), git signs, which-key, treesitter, and Lean. There is no
+distribution, no base46, and no abstraction layer.
 
 ## Requirements
 
-- **Neovim ≥ 0.11** (native `lsp/` runtime directory and `vim.lsp.enable`).
+- **Neovim ≥ 0.11** (native `after/lsp/` runtime directory and `vim.lsp.enable`).
 - The binaries below on `PATH`. Run `nvim --headless -l tests/check_tools.lua`
   for a report; missing tools are documented, not auto-installed.
 
@@ -31,10 +32,27 @@ Lean. There is no distribution, no base46, and no abstraction layer.
 
 lazy.nvim bootstraps itself and installs plugins on first launch
 (`install.colorscheme` falls back to catppuccin). Run `:Lazy sync` once if
-needed. If you are migrating from an NvChad setup, remove its stale caches first:
+needed. Treesitter parsers are installed automatically at startup
+(`require("nvim-treesitter").install`) and require the `tree-sitter` CLI. If you
+are migrating from an NvChad setup, remove its stale caches first:
 
 ```sh
 rm -rf "$(nvim --headless -c 'print(stdpath("data"))' -c q)/nvchad"
+```
+
+If you previously used an older nvim-treesitter (`main` branch changed its
+parser install location), remove the stale parsers in the plugin directory so
+they stop shadowing Neovim's bundled parsers:
+
+```sh
+rm -rf ~/.local/share/nvim/lazy/nvim-treesitter/parser
+```
+
+Leftover `vim.pack` packages (e.g. from a previous experiment) also trigger
+warnings in `:checkhealth lazy`; remove them if unused:
+
+```sh
+rm -rf ~/.local/share/nvim/site/pack/core ~/.config/nvim/nvim-pack-lock.json
 ```
 
 ## Layout
@@ -44,6 +62,7 @@ init.lua            leaders, lazy.nvim bootstrap, config imports
 lua/config/         options, keymaps, autocmds
 lua/plugins/        one file per concern, returns lazy.nvim specs
 after/lsp/          native server configs (auto-loaded, no require)
+after/ftplugin/     buffer-local tweaks (Julia 4-space indent)
 tests/              headless smoke + tool report
 sample/             minimal fixtures for manual checks
 ```
@@ -79,7 +98,8 @@ julia --project=~/.julia/environments/nvim-lspconfig -e 'using Pkg; Pkg.add("Lan
 | `]h` / `[h` | n | next / previous git hunk |
 | `<leader>hs` / `hr` / `hp` / `hb` | n | stage / reset / preview / blame hunk |
 
-Formatting is manual only (`format_on_save` is intentionally off).
+Formatting is manual only (`format_on_save` is intentionally off). Julia uses
+4-space indentation via `after/ftplugin/julia.lua`; everything else is 2-space.
 
 ## Tests
 
@@ -95,19 +115,19 @@ The Julia and LaTeX stacks have manual checks described in `PLAN.md`; open
 
 ## Troubleshooting
 
-**`Invalid node type "tab"` when opening a picker (e.g. `<leader>km`)** — the
-installed tree-sitter parser no longer matches the queries bundled with your
-Neovim (common after a Neovim upgrade, or when a stale parser shadows the one
-nvim-treesitter installed). Rebuild the parsers:
+**`Invalid node type "tab"` when opening a picker (e.g. `<leader>km`)** — a
+tree-sitter parser no longer matches the queries bundled with your Neovim
+(common after a Neovim upgrade). Most often a stale parser from an older
+nvim-treesitter is shadowing Neovim's bundled one; remove it and let the
+startup install recreate parsers in the current location:
 
 ```sh
-nvim --headless "+TSInstall! vim" +qa     # force-rebuild e.g. the vim parser
-# or, after a Neovim upgrade:
-nvim --headless "+TSUpdate" +qa
+rm -rf ~/.local/share/nvim/lazy/nvim-treesitter/parser
+nvim --headless "+TSInstall vim lua vimdoc" +qa   # or just restart nvim
 ```
 
-Check `:checkhealth vim.treesitter` and remove stale `vim.so` files from other
-parser directories if they shadow nvim-treesitter. As a safety net, the snacks
+Check `:checkhealth vim.treesitter` and `:checkhealth nvim-treesitter` to
+confirm the parsers come from the expected paths. As a safety net, the snacks
 picker degrades to unhighlighted entries instead of erroring when a query
 cannot be compiled.
 

@@ -17,7 +17,14 @@ return {
         "latex",
         "markdown",
         "markdown_inline",
+        "regex",
       },
     },
+    -- `ensure_installed` is not read by the `main` branch and `:TSUpdate` only
+    -- updates already-installed parsers, so install explicitly at startup.
+    config = function(_, opts)
+      require("nvim-treesitter").setup(opts)
+      require("nvim-treesitter").install(opts.ensure_installed)
+    end,
   },
 }

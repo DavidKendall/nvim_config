@@ -6,7 +6,7 @@ return {
       formatters_by_ft = {
         lua = { "stylua" },
         julia = { "injected", lsp_format = "fallback" },
-        latex = { "lsp_format" },
+        tex = { lsp_format = "fallback" }, -- .tex filetype is `tex`, not `latex`
       },
       format_on_save = nil, -- manual only, preserved from the old config
       format_after_save = nil,

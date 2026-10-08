@@ -32,6 +32,10 @@ vim.go.loadplugins = true
 
 dofile(root .. "/init.lua")
 
+-- `nvim -l` starts without filetype plugins; enable them so `after/ftplugin`
+-- files are sourced the way they are in a normal session.
+vim.cmd "filetype plugin indent on"
+
 local loader = require "lazy.core.loader"
 
 -- 1. Config + full plugin registration, no startup errors
@@ -48,6 +52,8 @@ local expected = {
   "conform.nvim",
   "lean.nvim",
   "plenary.nvim",
+  "lualine.nvim",
+  "nvim-web-devicons",
 }
 local registered = require("lazy.core.config").plugins
 local missing = {}
@@ -77,7 +83,7 @@ check(
 )
 
 -- Load plugins needed by the remaining assertions.
-loader.load({ "blink.cmp", "conform.nvim", "gitsigns.nvim", "snacks.nvim" }, {})
+loader.load({ "blink.cmp", "conform.nvim", "gitsigns.nvim", "snacks.nvim", "lualine.nvim" }, {})
 
 -- 4. Keymaps
 check("4a. <leader>tb mapped", vim.fn.maparg("jk", "i") ~= "" and vim.fn.maparg(vim.g.mapleader .. "tb", "n") ~= "")
@@ -135,7 +141,10 @@ local conform = require "conform"
 local stylua_ok, stylua_info = pcall(conform.get_formatter_info, "stylua")
 check(
   "6. conform formatters",
-  stylua_ok and stylua_info ~= nil and contains(conform.formatters_by_ft.julia, "injected")
+  stylua_ok
+    and stylua_info ~= nil
+    and contains(conform.formatters_by_ft.julia, "injected")
+    and type(conform.formatters_by_ft.tex) == "table"
 )
 
 -- 7. blink.cmp sources
@@ -166,6 +175,7 @@ if ts_ok and type(treesitter.get_installed) == "function" then
     "latex",
     "markdown",
     "markdown_inline",
+    "regex",
   }
   local ok, installed = pcall(treesitter.get_installed)
   if ok then
@@ -186,6 +196,19 @@ if ts_ok and type(treesitter.get_installed) == "function" then
 else
   print "SKIP: 8. nvim-treesitter not loaded"
 end
+
+-- 9. Statusline is provided by lualine (snacks has no statusline module)
+local lualine_ok = pcall(require, "lualine")
+check(
+  "9. lualine sets the statusline",
+  lualine_ok and type(vim.o.statusline) == "string" and vim.o.statusline:find "lualine" ~= nil,
+  vim.o.statusline
+)
+
+-- 10. Julia uses 4-space indentation via after/ftplugin/julia.lua
+vim.cmd "enew"
+vim.bo.filetype = "julia"
+check("10. julia indent is 4", vim.bo.shiftwidth == 4 and vim.bo.tabstop == 4, "shiftwidth=" .. vim.bo.shiftwidth)
 
 print(string.format("\n%d failure(s)", failures))
 os.exit(failures == 0 and 0 or 1)

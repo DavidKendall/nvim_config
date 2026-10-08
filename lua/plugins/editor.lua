@@ -16,7 +16,6 @@ return {
     opts = {
       picker = {},
       explorer = {},
-      statusline = {},
       notifier = {},
       indent = {},
       input = {},
@@ -37,6 +36,25 @@ return {
         return ok and result or {}
       end
     end,
+  },
+
+  {
+    "nvim-tree/nvim-web-devicons",
+    lazy = true,
+  },
+
+  {
+    "nvim-lualine/lualine.nvim",
+    event = "VeryLazy",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    opts = {
+      options = {
+        theme = "catppuccin-nvim",
+        globalstatus = true,
+        component_separators = { left = "", right = "" },
+        section_separators = { left = "", right = "" },
+      },
+    },
   },
 
   {

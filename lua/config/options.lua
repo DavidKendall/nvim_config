@@ -21,3 +21,11 @@ opt.signcolumn = "yes"
 opt.updatetime = 250
 opt.timeoutlen = 300
 opt.undofile = true
+opt.undodir = vim.fn.stdpath "state" .. "/undo"
+vim.fn.mkdir(vim.fn.stdpath "state" .. "/undo", "p")
+
+-- optional providers are unused; silence their health warnings
+vim.g.loaded_node_provider = 0
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_python3_provider = 0
+vim.g.loaded_ruby_provider = 0

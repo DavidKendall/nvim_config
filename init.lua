@@ -19,4 +19,5 @@ require("lazy").setup {
   spec = { { import = "plugins" } },
   change_detection = { notify = false },
   install = { colorscheme = { "catppuccin" } },
+  rocks = { enabled = false }, -- no plugin needs LuaRocks
 }
