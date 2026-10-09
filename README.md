@@ -99,9 +99,14 @@ julia --project=~/.julia/environments/nvim-lspconfig -e 'using Pkg; Pkg.add("Lan
 | `grn` / `grr` / `gri` / `gra` | n | rename / references / implementation / code action (native 0.11) |
 | `]h` / `[h` | n | next / previous git hunk |
 | `<leader>hs` / `hr` / `hp` / `hb` | n | stage / reset / preview / blame hunk |
+| `<Esc><Esc>` | t | exit terminal mode (single `<Esc>` reaches the program) |
+| `<C-h>` `<C-j>` `<C-k>` `<C-l>` | t | terminal-mode window navigation |
 
 Formatting is manual only (`format_on_save` is intentionally off). Julia uses
 4-space indentation via `after/ftplugin/julia.lua`; everything else is 2-space.
+
+`:terminal` opens in Terminal-Job mode (type immediately) and terminal buffers
+get clean local options (no line numbers, sign column, or `colorcolumn`).
 
 ## Tests
 
