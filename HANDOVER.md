@@ -75,7 +75,8 @@ These are preserved **verbatim** from the old config:
 **Mason is gone.** Nothing is auto-installed. The required binaries are
 `julia`, `texlab`, `tectonic`, `qpdfview`, `latexindent`,
 `lua-language-server`, `stylua`, `rust-analyzer`,
-`kotlin-language-server`, `git`, and the `tree-sitter` CLI. Run
+`kotlin-language-server`, `git`, the `tree-sitter` CLI, and `lazygit`
+(optional, for `<leader>gg`). Run
 
 ```sh
 nvim --headless -l tests/check_tools.lua
@@ -130,6 +131,7 @@ and different in places.
 - `<leader>hs` / `<leader>hr` / `<leader>hp` / `<leader>hb` — stage / reset /
   preview / blame hunk (gitsigns).
 - `<leader>w` / `<leader>q` — write / quit.
+- `<leader>gg` — open lazygit (git TUI; needs the `lazygit` binary on `PATH`).
 - Yank highlighting via a `TextYankPost` autocmd (`vim.hl.on_yank()`).
 
 Every mapping carries a `desc`, so `<leader>km` (or which-key) shows the full

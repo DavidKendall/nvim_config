@@ -33,6 +33,11 @@ map("n", "<leader>km", function()
   require("snacks").picker.keymaps()
 end, { desc = "Show all keymaps" })
 
+-- git (requires the `lazygit` binary on PATH)
+map("n", "<leader>gg", function()
+  require("snacks").lazygit()
+end, { desc = "LazyGit" })
+
 -- buffers
 map("n", "<leader>w", "<cmd>write<CR>", { desc = "Write buffer" })
 map("n", "<leader>q", "<cmd>quit<CR>", { desc = "Quit window" })

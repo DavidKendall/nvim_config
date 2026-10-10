@@ -26,6 +26,7 @@ distribution, no base46, and no abstraction layer.
 | `rust-analyzer` | Rust LSP | `rustup component add rust-analyzer` |
 | `kotlin-language-server` | Kotlin LSP | package manager, or [releases](https://github.com/kotlin-language-server/language-server/releases) |
 | `git` | gitsigns, lazy.nvim bootstrap | package manager |
+| `lazygit` | git TUI (`<leader>gg`) | package manager, or [releases](https://github.com/jesseduffield/lazygit/releases) |
 | `tree-sitter` CLI | compiling parsers (`:TSUpdate`) | `cargo install tree-sitter-cli` |
 
 ## First run
@@ -93,6 +94,7 @@ julia --project=~/.julia/environments/nvim-lspconfig -e 'using Pkg; Pkg.add("Lan
 | `<leader>e` | n | toggle file explorer |
 | `<leader>ff` / `fg` / `fb` / `fr` / `fs` | n | find files / grep / buffers / recent / document symbols |
 | `<leader>km` | n | pick keymaps |
+| `<leader>gg` | n | open lazygit (git TUI, needs the `lazygit` binary) |
 | `<leader>tb` | n | texlab build (`LspTexlabBuild`) |
 | `<leader>lf` | n | format buffer (conform) |
 | `gd` / `gD` / `K` | n | definition / declaration / hover |

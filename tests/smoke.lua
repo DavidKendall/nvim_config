@@ -210,5 +210,12 @@ vim.cmd "enew"
 vim.bo.filetype = "julia"
 check("10. julia indent is 4", vim.bo.shiftwidth == 4 and vim.bo.tabstop == 4, "shiftwidth=" .. vim.bo.shiftwidth)
 
+-- 11. lazygit integration (mapping + module present; binary is external)
+local snacks_ok, snacks = pcall(require, "snacks")
+check(
+  "11. <leader>gg mapped and Snacks.lazygit present",
+  vim.fn.maparg(vim.g.mapleader .. "gg", "n") ~= "" and snacks_ok and snacks.lazygit ~= nil
+)
+
 print(string.format("\n%d failure(s)", failures))
 os.exit(failures == 0 and 0 or 1)

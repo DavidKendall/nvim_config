@@ -33,6 +33,7 @@ return {
       input = {},
       quickfile = {},
       bigfile = {},
+      lazygit = {},
     },
     config = function(_, opts)
       require("snacks").setup(opts)
