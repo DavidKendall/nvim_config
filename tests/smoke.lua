@@ -217,5 +217,17 @@ check(
   vim.fn.maparg(vim.g.mapleader .. "gg", "n") ~= "" and snacks_ok and snacks.lazygit ~= nil
 )
 
+-- 12. Terminal windows get clean options; normal buffers keep editor defaults
+vim.cmd "enew"
+vim.cmd "terminal"
+local term_ok = vim.wo.number == false and vim.wo.signcolumn == "no" and vim.wo.colorcolumn == ""
+vim.cmd "enew"
+local normal_ok = vim.wo.number == true and vim.wo.signcolumn == "yes" and vim.wo.colorcolumn == "92"
+check(
+  "12. terminal/normal window options reconcile",
+  term_ok and normal_ok,
+  "term=" .. tostring(term_ok) .. " normal=" .. tostring(normal_ok)
+)
+
 print(string.format("\n%d failure(s)", failures))
 os.exit(failures == 0 and 0 or 1)

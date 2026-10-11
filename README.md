@@ -107,8 +107,10 @@ julia --project=~/.julia/environments/nvim-lspconfig -e 'using Pkg; Pkg.add("Lan
 Formatting is manual only (`format_on_save` is intentionally off). Julia uses
 4-space indentation via `after/ftplugin/julia.lua`; everything else is 2-space.
 
-`:terminal` opens in Terminal-Job mode (type immediately) and terminal buffers
-get clean local options (no line numbers, sign column, or `colorcolumn`).
+`:terminal` opens in Terminal-Job mode (type immediately). Terminal windows get
+clean options (no line numbers, sign column, folds, or `colorcolumn`), and
+window options are reconciled per buffer, so returning to a normal buffer
+restores the editor defaults (numbers, sign column, `colorcolumn`).
 
 ## Tests
 
